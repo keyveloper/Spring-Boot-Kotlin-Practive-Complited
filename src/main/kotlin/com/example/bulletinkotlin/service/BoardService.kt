@@ -13,7 +13,10 @@ class BoardService(private val boardRepository: BoardRepository) {
     @Transactional
     fun findBoards() : List<GetBoardResultDto> = boardRepository.findAll().map { convertToResult(it) }
 
-    fun findBoardById(id : Long) : Board? = boardRepository.findById(id).orElse(null)
+    fun findBoardById(id : Long) : GetBoardResultDto? {
+        val board = boardRepository.findById(id).orElse(null)
+        return board?.let { convertToResult(it) }
+    }
 
     fun deleteBoardById(id: Long) = boardRepository.deleteById(id)
 

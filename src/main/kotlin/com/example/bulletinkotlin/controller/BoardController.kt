@@ -7,6 +7,7 @@ import com.example.bulletinkotlin.dto.GetCommentResultDto
 import com.example.bulletinkotlin.service.BoardService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -18,9 +19,20 @@ class BoardController(private val boardService: BoardService) {
         return ResponseEntity.ok().body(responses)
     }
 
+    @GetMapping("/board/{id}")
+    fun findBoardById(@PathVariable id: Long): ResponseEntity<GetBoardResponseDto> {
+        val boardResult = boardService.findBoardById(id)
+        return if (boardResult != null) {
+            ResponseEntity.ok().body(convertResponse(boardResult))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     fun convertCommentToResponse(commentResult: GetCommentResultDto): GetCommentResponseDto {
         return GetCommentResponseDto(
             id = commentResult.id,
+            boardId = commentResult.boardId,
             writer = commentResult.writer,
             textContent = commentResult.textContent,
             firstWritingTime = commentResult.firstWritingTime,
