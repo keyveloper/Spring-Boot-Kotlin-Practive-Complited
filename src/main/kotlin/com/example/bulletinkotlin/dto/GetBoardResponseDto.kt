@@ -1,16 +1,15 @@
 package com.example.bulletinkotlin.dto
 
-import lombok.Getter
+import lombok.Builder
 import java.time.LocalDateTime
 
-@Getter
-data class GetBoardResponseDto(
-    val id: Long,
-    val title: String,
-    val writer: String,
-    val textContent: String,
-    val firstWritingTime: LocalDateTime,
-    val lastModifiedByUser: LocalDateTime,
-    val readingCount : Int,
-    val comments: List<GetCommentResponseDto>
+class GetBoardResponseDto(
+    var id: Long,
+    var title: String,
+    var writer: String,
+    var textContent: String,
+    var firstWritingTime: LocalDateTime,
+    var lastModifiedTime: LocalDateTime,
+    var readingCount : Int,
+    var comments: List<GetCommentResponseDto>
 )

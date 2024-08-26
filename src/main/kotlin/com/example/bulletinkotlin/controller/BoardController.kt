@@ -19,13 +19,24 @@ class BoardController(private val boardService: BoardService) {
     }
 
     fun convertCommentToResponse(commentResult: GetCommentResultDto): GetCommentResponseDto {
-        return GetCommentResponseDto(commentResult.id, commentResult.writer, commentResult.textContent,
-                commentResult.firstWritingTime, commentResult.lastModifiedTime)
+        return GetCommentResponseDto(
+            id = commentResult.id,
+            writer = commentResult.writer,
+            textContent = commentResult.textContent,
+            firstWritingTime = commentResult.firstWritingTime,
+            lastModifiedTime = commentResult.lastModifiedTime)
     }
 
     fun convertResponse(result: GetBoardResultDto): GetBoardResponseDto {
         val commentResponses: List<GetCommentResponseDto> = result.comments.map { convertCommentToResponse(it) }
-        return GetBoardResponseDto(result.id, result.title, result.writer, result.textContent
-            , result.firstWritingTime, result.lastModifiedByUser, result.readingCount, commentResponses)
+        return GetBoardResponseDto(
+            id = result.id,
+            title = result.title,
+            writer = result.writer,
+            textContent = result.textContent,
+            firstWritingTime = result.firstWritingTime,
+            lastModifiedTime = result.lastModifiedTime,
+            readingCount = result.readingCount,
+            comments = commentResponses)
     }
 }

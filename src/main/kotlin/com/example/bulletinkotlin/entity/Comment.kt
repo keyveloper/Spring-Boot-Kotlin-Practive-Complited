@@ -1,24 +1,22 @@
 package com.example.bulletinkotlin.entity
 
 import jakarta.persistence.*
+import lombok.Data
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "comments")
-data class Comment(
+class Comment(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-
+    var id: Long?,
     @ManyToOne
     @JoinColumn(name = "board_id")
-    val board: Board,
-    val writer: String,
+    var board: Board,
+    var writer: String,
     @Column(name = "text_content")
-    val textContent: String,
+    var textContent: String,
     @Column(name = "first_writing_time")
-    val firstWritingTime: LocalDateTime,
+    var firstWritingTime: LocalDateTime,
     @Column(name = "last_modified_time")
-    val lastModifiedTime: LocalDateTime
-) {
-    constructor() : this(0L, Board(), "", "", LocalDateTime.now(), LocalDateTime.now())
-}
+    var lastModifiedTime: LocalDateTime
+)

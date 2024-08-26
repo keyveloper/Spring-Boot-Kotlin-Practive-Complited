@@ -19,14 +19,25 @@ class BoardService(private val boardRepository: BoardRepository) {
 
 //    fun writeBoard(board: Board) : String = boardRepository.save(board)
     fun convertCommentToResult(comment: Comment): GetCommentResultDto {
-        return GetCommentResultDto(comment.id, comment.board.id, comment.writer,
-            comment.textContent, comment.firstWritingTime, comment.lastModifiedTime)
+        return GetCommentResultDto(
+            id = comment.id!!,
+            boardId = comment.board.id!!,
+            writer = comment.writer,
+            textContent = comment.textContent,
+            firstWritingTime = comment.firstWritingTime,
+            lastModifiedTime = comment.lastModifiedTime)
     }
 
     fun convertToResult(board: Board): GetBoardResultDto{
         val commentResults: List<GetCommentResultDto> = board.comments.map { convertCommentToResult(it) }
-        return GetBoardResultDto(board.id, board.title, board.writer, board.textContent,
-            board.firstWritingTime, board.lastModifiedTime, board.readingCount, commentResults)
+        return GetBoardResultDto(
+            id = board.id!!,
+            title = board.title,
+            writer =  board.writer,
+            textContent = board.textContent,
+            firstWritingTime = board.firstWritingTime,
+            lastModifiedTime = board.lastModifiedTime,
+            readingCount = board.readingCount,
+            comments = commentResults)
     }
-
 }
