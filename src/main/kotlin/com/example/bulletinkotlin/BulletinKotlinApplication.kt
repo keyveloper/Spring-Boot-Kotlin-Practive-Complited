@@ -8,4 +8,5 @@ class BulletinKotlinApplication
 
 fun main(args: Array<String>) {
     runApplication<BulletinKotlinApplication>(*args)
+    println("this is master")
 }
