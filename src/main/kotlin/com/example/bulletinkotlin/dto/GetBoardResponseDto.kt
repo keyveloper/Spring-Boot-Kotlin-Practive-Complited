@@ -1,6 +1,5 @@
 package com.example.bulletinkotlin.dto
 
-import lombok.Builder
 import java.time.LocalDateTime
 
 class GetBoardResponseDto(
