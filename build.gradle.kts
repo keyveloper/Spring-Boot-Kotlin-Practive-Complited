@@ -2,10 +2,31 @@ plugins {
     kotlin("jvm") version "1.9.24"
     kotlin("plugin.spring") version "1.9.24"
     kotlin("plugin.jpa") version "1.9.24"
+    kotlin("kapt") version "1.9.10"
     id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.6"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.9.24"
 }
+
+
+// query dsl settings - Q class
+kapt{
+    includeCompileClasspath = false
+    arguments {
+        arg("querydsl.entityAccessors", "true")
+        arg("querydsl.useKotlinClass", "true")
+    }
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDirs("src/main/kotlin")
+        }
+    }
+}
+
+//
 
 noArg{
     annotation("javax.persistence.Entity")
@@ -45,6 +66,12 @@ dependencies {
 
     // maria DB
     implementation("org.mariadb.jdbc:mariadb-java-client:3.2.0")
+
+    // query DSL
+    implementation ("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt ("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt ("jakarta.annotation:jakarta.annotation-api")
+    kapt ("jakarta.persistence:jakarta.persistence-api")
 }
 
 kotlin {

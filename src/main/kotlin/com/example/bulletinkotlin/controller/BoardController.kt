@@ -4,6 +4,8 @@ import com.example.bulletinkotlin.dto.*
 import com.example.bulletinkotlin.enum.DeleteStatus
 import com.example.bulletinkotlin.enum.WriteStatus
 import com.example.bulletinkotlin.service.BoardService
+import lombok.extern.slf4j.Slf4j
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.lang.RuntimeException
 
+@Slf4j
 @RestController
 class BoardController(private val boardService: BoardService) {
+    private val logger = LoggerFactory.getLogger(BoardController::class.java)
     @GetMapping("/boards")
-    fun findBoards(): ResponseEntity<List<GetBoardResponseDto>> {
-        val responses: List<GetBoardResponseDto> = boardService.findBoards()
-            .map { convertResponse(it) }
+    fun findBoards(): ResponseEntity<List<GetBoardListResponseDto>> {
+        val responses: List<GetBoardListResponseDto> = boardService.findBoards()
+            .map { convertListResponse(it) }
         return ResponseEntity.ok().body(responses)
     }
 
@@ -65,6 +69,43 @@ class BoardController(private val boardService: BoardService) {
         }
     }
 
+    @GetMapping("/boards/like")
+    fun findByLike(
+        @RequestParam(required = false) writer: String?,
+        @RequestParam(required = false) notContainWriter: String?,
+        @RequestParam(required = false) textContent: String?,
+    ) : ResponseEntity<List<GetBoardListResponseDto>>{
+        logger.info("writer: $writer, notContainWriter: $notContainWriter, textContent: $textContent")
+
+        if (notContainWriter != null) {
+            logger.info("notContainWriter is not null!! ")
+        }
+
+        val response: List<GetBoardListResponseDto> = boardService.findByLike(LikeRequestDto(
+            writer = writer,
+            notContainWriter = notContainWriter,
+            textContent = textContent
+        )).map { convertListResponse(it) }
+        return ResponseEntity.ok().body(response)
+    }
+
+    @GetMapping("/boards/like-comment")
+    fun findByLikeComment(
+        @RequestParam(required = false) writer: String?,
+        @RequestParam(required = false) notContainWriter: String?,
+        @RequestParam(required = false) textContent: String?
+    ) : ResponseEntity<List<GetBoardListResponseDto>>{
+        val response: List<GetBoardListResponseDto> = boardService.findByCommentLike(
+            LikeRequestDto(
+                writer = writer,
+                notContainWriter = notContainWriter,
+                textContent = textContent
+            )
+        ).map { convertListResponse(it) }
+        return ResponseEntity.ok().body(response)
+
+    }
+
     fun convertCommentToResponse(commentResult: GetCommentResultDto): GetCommentResponseDto {
         return GetCommentResponseDto(
             id = commentResult.id,
@@ -86,5 +127,16 @@ class BoardController(private val boardService: BoardService) {
             lastModifiedTime = result.lastModifiedTime,
             readingCount = result.readingCount,
             comments = commentResponses)
+    }
+
+    fun convertListResponse(result: GetBoardListResultDto): GetBoardListResponseDto {
+        return GetBoardListResponseDto(
+            id = result.id,
+            title = result.title,
+            writer = result.writer,
+            textContent = result.textContent,
+            firstWritingTime = result.firstWritingTime,
+            readingCount = result.readingCount,
+        )
     }
 }

@@ -13,7 +13,7 @@ import java.lang.RuntimeException
 @Service
 class BoardService(private val boardRepository: BoardRepository) {
     @Transactional
-    fun findBoards() : List<GetBoardResultDto> = boardRepository.findAll().map { convertToResult(it) }
+    fun findBoards() : List<GetBoardListResultDto> = boardRepository.findAll().map { convertToListResult(it) }
 
     fun findBoardById(id : Long) : GetBoardResultDto? {
         val board = boardRepository.findById(id).orElse(null)
@@ -54,8 +54,15 @@ class BoardService(private val boardRepository: BoardRepository) {
         }
     }
 
-//    fun writeBoard(board: Board) : String = boardRepository.save(board)
-    fun convertCommentToResult(comment: Comment): GetCommentResultDto {
+    fun findByLike(request: LikeRequestDto): List<GetBoardListResultDto> {
+        return boardRepository.findByLike(request).map { convertToListResult(it) }
+    }
+
+    fun findByCommentLike(request: LikeRequestDto): List<GetBoardListResultDto> {
+        return boardRepository.findByCommentLike(request).map { convertToListResult(it) }
+    }
+
+    private fun convertCommentToResult(comment: Comment): GetCommentResultDto {
         return GetCommentResultDto(
             id = comment.id!!,
             boardId = comment.board.id!!,
@@ -65,7 +72,7 @@ class BoardService(private val boardRepository: BoardRepository) {
             lastModifiedTime = comment.lastModifiedTime)
     }
 
-    fun convertToResult(board: Board): GetBoardResultDto{
+    private fun convertToResult(board: Board): GetBoardResultDto{
         val commentResults: List<GetCommentResultDto> = board.comments.map { convertCommentToResult(it) }
         return GetBoardResultDto(
             id = board.id!!,
@@ -78,11 +85,22 @@ class BoardService(private val boardRepository: BoardRepository) {
             comments = commentResults)
     }
 
-    fun makeBoard(boardInfo: WriteBoardRequestDto) : Board {
+    private fun convertToListResult(board: Board): GetBoardListResultDto{
+        return GetBoardListResultDto(
+            id = board.id!!,
+            title = board.title,
+            writer = board.writer,
+            textContent = board.textContent,
+            firstWritingTime = board.firstWritingTime!!,
+            readingCount = board.readingCount,
+        )
+    }
+
+    private fun makeBoard(boardInfo: WriteBoardRequestDto) : Board {
         return Board(
             writer = boardInfo.writer,
             title = boardInfo.title,
             textContent = boardInfo.textContent,
         )
     }
-    }
+}
