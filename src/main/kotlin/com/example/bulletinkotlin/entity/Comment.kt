@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @Table(name = "comments")
 class Comment(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long?,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "board_id")

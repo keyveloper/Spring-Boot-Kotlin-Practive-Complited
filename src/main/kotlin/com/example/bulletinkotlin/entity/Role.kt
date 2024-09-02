@@ -5,10 +5,13 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "roles")
 class Role (
-    @Id @GeneratedValue
-    @Column(name= "role_id")
-    var id: Long = 0,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    var id: Long? = null,
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     var name: String,
 )
+
+
+

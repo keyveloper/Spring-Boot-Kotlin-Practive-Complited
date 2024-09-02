@@ -1,15 +1,16 @@
 package com.example.bulletinkotlin.entity
 
 import jakarta.persistence.*
+import com.example.bulletinkotlin.entity.Role
 
 @Entity
 @Table(name = "users")
 class User (
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    var id: Long?,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    var id: Long? = null,
 
-    @Column(unique = true, name = "user_name", nullable = false)
+    @Column(unique = true, name = "username", nullable = false)
     var username: String,
 
     @Column(name = "password", nullable = false)
@@ -18,11 +19,11 @@ class User (
     @Column(name = "enabled", nullable = false)
     var enabled: Boolean = true,
 
-    @ManyToMany(cascade = [(CascadeType.ALL)], fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(
-        name = "roles",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "role_id")]
+        name = "users_roles",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")]
     )
-    var roles: Set<Role> = setOf()
+    val roles: Set<Role> = setOf()
 )
